@@ -9,5 +9,5 @@ Tests are currently invoked directly:
 
 ## Known Issues
 - Tests will not work without being copied/moved alongside netstat.py
-- Bazel configuration is not yet functional. This will fix the aforementioned issue.
-- Our puppy *LOVES* to demand attention when I'm on my laptop.
+- Bazel configuration is not yet functional. Resolving this will fix the aforementioned issue.
+- Our puppy *LOVES* to demand attention when I'm on my laptop. This currently blocks all issues. (jk)
