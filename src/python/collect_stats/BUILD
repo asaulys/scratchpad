@@ -6,6 +6,12 @@ py_library(
 )
 
 py_binary(
+    name = "net_netstat",
+    main = "net/netstat.py",
+    srcs = ["net/netstat.py",],
+)
+
+py_binary(
     name = "collect_stats",
     main = "main.py",
     srcs = ["main.py"],
