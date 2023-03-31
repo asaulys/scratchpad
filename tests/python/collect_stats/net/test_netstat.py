@@ -2,7 +2,7 @@ import unittest
 from subprocess import CompletedProcess
 from unittest.mock import patch
 
-from netstat import run_command
+import scratchpad.src.python.collect_stats.net.netstat as netstat
 
 
 # Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
@@ -23,7 +23,7 @@ class TestNetNetstat(unittest.TestCase):
           stdout=FAKE_NETSTAT_STDOUT,
           stderr="",
       )
-      output = run_command()
+      output = netstat.run_command()
       self.assertEqual(
           hasattr(output, "__iter__"),
           True,

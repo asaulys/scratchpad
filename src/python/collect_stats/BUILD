@@ -1,3 +1,10 @@
+package(
+    default_visibility = [
+        "//visibility:__subpackages__",
+        "//scratchpad/tests/python/collect_stats:__subpackages__",
+    ]
+)
+
 py_library(
     name = "net",
     srcs = [
