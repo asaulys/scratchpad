@@ -5,7 +5,7 @@ from unittest.mock import patch
 import scratchpad.src.python.collect_stats.net.netstat as netstat
 
 
-# Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
+# Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
 FAKE_NETSTAT_STDOUT = b"""
 tcp        0      0 127.0.0.1:631           0.0.0.0:*               LISTEN      2183/cupsd          
 tcp        12      12 127.0.0.1:8001          0.0.0.0:*               LISTEN      45500/kubectl       
@@ -41,7 +41,7 @@ class TestNetNetstat(unittest.TestCase):
       iterated_output = [line for line in output]
       self.assertEqual(
           iterated_output,
-          EXPECTED_RUN_COMMAND_LIST, 
+          EXPECTED_RUN_COMMAND_LIST,
       )
 
 #    def test_count_queues_adds_correctly(self):
@@ -57,35 +57,7 @@ if __name__ == "__main__":
 
 
 
-
-#@patch(subprocess.check_output)
-#def test_call_to_main():
-##    with patch("subprocess.check_output") as mock_check_output:
-#        mock_check_output.return_value(EXPECTED_NETSTAT_NAP_OUTPUT)
-        # import pdb
-        # pdb.set_trace()
-#        main(count=3)
-
-# def run_netstat_nap():
-#   #output = subprocess.check_output(NETSTAT_NAP_COMMAND)
-#   output = EXPECTED_NETSTAT_NAP_OUTPUT
-#   return output
-# 
-# def parse_netstat_output(output: str):
-#     """expected input:
-#         tcp        0      0 127.0.0.1:631           0.0.0.0:*               LISTEN      2183/cupsd          
-# 
-#         expected output:
-#         ['tcp', '0', '0', '127.0.0.1:8001', '0.0.0.0:*', 'LISTEN', '45500/kubectl']
-#     """
-#     data = []
-#     for line in output.split("\n"):
-#       data.append(line.rstrip().split())
-#     return data
-# 
-# def count_queues():
-#     pass
-# 
+# TODO implement and cleanup
 # def main(count:int = -1):
 #     # try+except shutdown signal for clean monitoring/metric routing
 #     while True:
