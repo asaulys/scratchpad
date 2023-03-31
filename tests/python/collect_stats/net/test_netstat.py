@@ -12,6 +12,15 @@ tcp        12      12 127.0.0.1:8001          0.0.0.0:*               LISTEN    
 tcp        24      24 0.0.0.0:5355            0.0.0.0:*               LISTEN      1852/systemd-resolv 
 tcp        13      13 192.168.122.1:53        0.0.0.0:*               LISTEN      2950/dnsmasq        
 """
+EXPECTED_RUN_COMMAND_LIST = [
+    '',
+    'tcp        0      0 127.0.0.1:631           0.0.0.0:*               LISTEN      2183/cupsd',
+    'tcp        12      12 127.0.0.1:8001          0.0.0.0:*               LISTEN      45500/kubectl',
+    'tcp        24      24 0.0.0.0:5355            0.0.0.0:*               LISTEN      1852/systemd-resolv',
+    'tcp        13      13 192.168.122.1:53        0.0.0.0:*               LISTEN      2950/dnsmasq',
+    ''
+]
+
 
 class TestNetNetstat(unittest.TestCase):
 
@@ -29,7 +38,11 @@ class TestNetNetstat(unittest.TestCase):
           True,
           f"expected output to be an iterator. got: {type(output) = }"
       )
-      print(f"{output = }")
+      iterated_output = [line for line in output]
+      self.assertEqual(
+          iterated_output,
+          EXPECTED_RUN_COMMAND_LIST, 
+      )
 
 #    def test_count_queues_adds_correctly(self):
 
