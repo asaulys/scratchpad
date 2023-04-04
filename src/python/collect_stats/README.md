@@ -10,6 +10,10 @@ The (currently) primary entry point is actually net/netstat.py. See examples for
 
 `bazel run src/python/collect_stats:net_netstat`
 
+**build a binary**
+
+`bazel build src/python/collect_stats:net_netstat`
+
 **run netstat tests**
 
 `bazel test tests/python/collect_stats:test_net_netstat`
