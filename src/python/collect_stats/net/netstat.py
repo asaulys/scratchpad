@@ -33,15 +33,18 @@ udp        15     15 172.20.10.202:50314     142.250.190.67:443      ESTABLISHED
 
 
 def run_command(**kwargs: dict) -> typing.Generator[str, None, None]:
-    """input: none
-         OPTIONAL: capture_output (bool): True - passed to subprocess.run
+    """run_command executes the netstat command to obtain data.
 
-    yields strings representing the captured output
+    OPTIONAL key-word arguments:
+      capture_output (bool): True - whether to pass back stdout and stderr
+      timeout (float): time to allow the process to run
+
+    yields strings representing the captured output lines
     """
     # set up subprocess
     options = {
         "capture_output": kwargs.get("capture_output", True),
-        "timeout": kwargs.get("timeout", 1.0),
+        "timeout": float(kwargs.get("timeout", 1.0)),
     }
     # prepare to run command
     logger.debug(f"running {NETSTAT_COMMAND = } with {options = }")
@@ -55,7 +58,10 @@ def run_command(**kwargs: dict) -> typing.Generator[str, None, None]:
 def parse_netstat_output(
     output: typing.Iterable[str],
 ) -> typing.Optional[typing.Generator[dict, None, None]]:
-    """output: a list of strings representing lines from netstat
+    """parse_netstat_output() - iterates over lines of output from netstat and attempts to create
+       a dictionary via regex pattern match
+
+     output: a list of strings representing lines from netstat. e.g.:
      tcp        0      0 127.0.0.1:631           0.0.0.0:*               LISTEN      2183/cupsd
      tcp        12     0 127.0.0.1:10001         0.0.0.0:*               LISTEN      46500/tumadre
 
@@ -80,6 +86,11 @@ def parse_netstat_output(
 
 
 def count_queues(fields: typing.List[dict]) -> typing.Dict[str, int]:
+    """count_queues() - discretely sums the receive and transmit queues. We expect these to be
+    fields in a dictionary.
+
+    Returns a dictionary with keys 'recvq' and 'sendq'
+    """
     recvq = 0
     sendq = 0
     for field_group in fields:
@@ -93,7 +104,7 @@ def count_queues(fields: typing.List[dict]) -> typing.Dict[str, int]:
 
 
 def process():
-    """helper when this file is called directly"""
+    """helper used to execute this program when this file is called directly"""
     # generators
     output = run_command()
     fields = parse_netstat_output(output)
