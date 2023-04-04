@@ -7,16 +7,15 @@ from dataclasses import dataclass
 from typing import List
 
 
-logger = logging.getLogger("collect_stats.net.netstat")
+logger = logging.getLogger("scratchpad.src.python.collect_stats.net.netstat")
 logger.setLevel(logging.DEBUG)
 
-# TODO - this is a trivial parsing implementation. We should use something like 'jc' if we call
-# netstat directly or just use a library to provide this data.
-# NETSTAT_COMMAND = ["netstat", "-tulpn",]
 NETSTAT_COMMAND = [
   "netstat",
   "-tupn",
 ]
+# TODO - this is a trivial parsing implementation. We should use something like 'jc' if we call
+# netstat directly or just use a library to provide this data.
 # TODO - opportunities: this doesn't match all possible output formats and could use improvements
 # to enhance support.
 RE_PATTERN = re.compile(
@@ -31,29 +30,6 @@ tcp        24      0 0.0.0.0:5355            0.0.0.0:*               LISTEN     
 tcp        0      13 192.168.122.1:53        0.0.0.0:*               LISTEN      2950/dnsmasq        
 udp        15     15 172.20.10.202:50314     142.250.190.67:443      ESTABLISHED 7078/brave --type=u  
 """
-
-# @dataclass
-# class NetstatIPOutput:
-#   proto: str
-#   recv-q: int
-#   send-q: int
-#   local-addr: str
-#   remote-addr: str
-#   state: str
-#   program: str
-
-#   @classmethod
-#   def from_string(cls, input: str) -> typing.Optional[netstat_ip_output]:
-#     # TODO - this is a trivial parsing implementation. We should use something like 'jc' to handle
-#     #        all of the output cases
-#     fields = input.rstrip.split()
-#     if "Proto" in fields and "Recv-Q" in fields:
-#       return
-#     if len(fields) == 7 and ("tcp" in field[0] or "udp" in field[0]):
-#       return cls(*fields)
-#     else:
-#       raise NotImplementedError("unhandled input")
-
 
 def run_command(**kwargs) -> str:
   """input: none
@@ -75,9 +51,10 @@ def run_command(**kwargs) -> str:
     yield (line.rstrip())
 
 
-def parse_netstat_output(output: str) -> typing.Optional[dict]:
-  """output: a line from netstat
+def parse_netstat_output(output: typing.List[str]) -> typing.Optional[dict]:
+  """output: a list of strings representing lines from netstat
    tcp        0      0 127.0.0.1:631           0.0.0.0:*               LISTEN      2183/cupsd
+   tcp        12     0 127.0.0.1:10001         0.0.0.0:*               LISTEN      46500/tumadre
 
    yields a dictionary representing parsed output
   {'proto': 'tcp',
@@ -91,10 +68,12 @@ def parse_netstat_output(output: str) -> typing.Optional[dict]:
 
   for line in output:
     result = RE_PATTERN.match(line)
-    if not result:
-      logger.debug(f"returning None for: {line = }")
-      return None
-    yield result.groupdict()
+    logger.debug(f"trying match for {line = }. got {result =}")
+    if result:
+      logger.debug(f"yielding {result.groupdict()= }")
+      yield result.groupdict()
+    else:
+      logger.debug("no resulting match")
 
 
 def count_queues(fields: List[dict]):
