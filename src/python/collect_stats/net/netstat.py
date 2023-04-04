@@ -1,10 +1,10 @@
+import argparse
 import logging
 import re
 import subprocess
 import typing
 
 from dataclasses import dataclass
-from typing import List
 
 
 logger = logging.getLogger("scratchpad.src.python.collect_stats.net.netstat")
@@ -32,7 +32,7 @@ udp        15     15 172.20.10.202:50314     142.250.190.67:443      ESTABLISHED
 """
 
 
-def run_command(**kwargs) -> str:
+def run_command(**kwargs: dict) -> typing.Generator[str, None, None]:
     """input: none
          OPTIONAL: capture_output (bool): True - passed to subprocess.run
 
@@ -52,7 +52,9 @@ def run_command(**kwargs) -> str:
         yield (line.rstrip())
 
 
-def parse_netstat_output(output: typing.List[str]) -> typing.Optional[dict]:
+def parse_netstat_output(
+    output: typing.Iterable[str],
+) -> typing.Optional[typing.Generator[dict, None, None]]:
     """output: a list of strings representing lines from netstat
      tcp        0      0 127.0.0.1:631           0.0.0.0:*               LISTEN      2183/cupsd
      tcp        12     0 127.0.0.1:10001         0.0.0.0:*               LISTEN      46500/tumadre
@@ -77,7 +79,7 @@ def parse_netstat_output(output: typing.List[str]) -> typing.Optional[dict]:
             logger.debug("no resulting match")
 
 
-def count_queues(fields: List[dict]):
+def count_queues(fields: typing.List[dict]) -> typing.Dict[str, int]:
     recvq = 0
     sendq = 0
     for field_group in fields:
@@ -101,4 +103,8 @@ def process():
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Sums receive and transmit queues as reported by netstat"
+    )
+    parser.parse_args()
     print(process())

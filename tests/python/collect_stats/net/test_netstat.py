@@ -1,7 +1,6 @@
-import typing
 import unittest
 from subprocess import CompletedProcess
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 from scratchpad.src.python.collect_stats.net.netstat import (
     count_queues,
@@ -80,11 +79,6 @@ PARSED_OUTPUT_FIXTURE = [
 COUNTED_QUEUE_FIXTURE = {"recvq": 25, "sendq": 36}
 
 
-def yield_output(output):
-    for item in output:
-        yield item
-
-
 class TestNetNetstat(unittest.TestCase):
     def setUp(self):
         self.maxDiff = 2000
@@ -118,7 +112,7 @@ class TestNetNetstat(unittest.TestCase):
         )
 
     def test_parse_netstat_output_returns_expected_lines(self) -> None:
-        output = parse_netstat_output(yield_output(COMMAND_OUTPUT_FIXTURE))
+        output = parse_netstat_output(COMMAND_OUTPUT_FIXTURE)
         self.assertEqual(
             hasattr(output, "__iter__"),
             True,
