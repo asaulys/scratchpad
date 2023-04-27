@@ -32,7 +32,7 @@ udp        15     15 172.20.10.202:50314     142.250.190.67:443      ESTABLISHED
 """
 
 
-def run_command(**kwargs: dict) -> typing.Generator[str, None, None]:
+def run_command(**kwargs: typing.Dict[str, typing.Any]) -> typing.Generator[str, None, None]:
     """run_command executes the netstat command to obtain data.
 
     OPTIONAL key-word arguments:
@@ -42,9 +42,9 @@ def run_command(**kwargs: dict) -> typing.Generator[str, None, None]:
     yields strings representing the captured output lines
     """
     # set up subprocess
-    options = {
+    options: typing.Dict[typing.Any, typing.Any] = {
         "capture_output": kwargs.get("capture_output", True),
-        "timeout": float(kwargs.get("timeout", 1.0)),
+        "timeout": float(kwargs.get("timeout", 1.0)),  # type: ignore
     }
     # prepare to run command
     logger.debug(f"running {NETSTAT_COMMAND = } with {options = }")
@@ -83,6 +83,7 @@ def parse_netstat_output(
             yield result.groupdict()
         else:
             logger.debug("no resulting match")
+    return None
 
 
 def count_queues(fields: typing.List[dict]) -> typing.Dict[str, int]:
